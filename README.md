@@ -46,7 +46,11 @@ Nous avons commencé par créer un réseau _"from scratch"_ , un simple réseau 
 
 #### Résultats
 
+<p align="center">
+   <img src='img/results_custom_nn.png' />
+</p>
 
+Notre réseau présente d'assez bonnes performances, nous obtenons **91%** d'accuracy sur le set de test. Nous obtenons également une précision de **91%**, ce qui indique un taux de faux positifs de 9% seulement. On obtient également un score de rappel de **90%**. Le rappel donne le taux d'observations correctement étiquettées. On observe donc que seul 10% des prédictions sont mal étiquettées.
 
 ### Réseaux pré-entraînés
 
@@ -59,4 +63,10 @@ Nous avons comparé les résultats obtenus avec un réseau créé à partir d'un
 </p>
 
 #### Résultats
+
+<p align="center">
+   <img src='img/results_custom_nn.png' />
+</p>
+
+Notre réseau présente d'assez bonnes performances, nous obtenons **91%** d'accuracy sur le set de test. Nous obtenons également une précision de **91%**, ce qui indique un taux de faux positifs de 9% seulement. On obtient également un score de rappel de **90%**. Le rappel donne le taux d'observations correctement étiquettées. On observe donc que seul 10% des prédictions sont mal étiquettées.
 
