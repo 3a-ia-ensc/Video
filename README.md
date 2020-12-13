@@ -59,14 +59,17 @@ Le code de ce réseau est disponible dans un jupyter notebook:  [notebooks/nn_vg
 Nous avons comparé les résultats obtenus avec un réseau créé à partir d'un réseau déjà existant, ainsi nous avons utilisé l'architecture du réseau VGG pré-entraîné sur la base de données ImageNet.
 
 <p align="center">
-   <img src='img/nn_custom.png' />
+   <img src='img/nn_vgg.png' />
 </p>
+
 
 #### Résultats
 
 <p align="center">
-   <img src='img/results_custom_nn.png' />
+   <img src='img/results_vgg.jpeg' />
 </p>
 
-Notre réseau présente d'assez bonnes performances, nous obtenons **91%** d'accuracy sur le set de test. Nous obtenons également une précision de **91%**, ce qui indique un taux de faux positifs de 9% seulement. On obtient également un score de rappel de **90%**. Le rappel donne le taux d'observations correctement étiquettées. On observe donc que seul 10% des prédictions sont mal étiquettées.
+Nous obtenons des résultats sensiblements identiques sur ce réseau mais pour un temps d'entrainement près de 10 fois supérieur. En effet, l'entrainement de ce réseau à pris un peu de plus de 7h.
+
+Nous obtenons **88%** d'accuracy sur le set de test. Nous obtenons également une précision de **90%**, ce qui indique un taux de faux positifs de 10% seulement. On obtient également un score de rappel de **87%**.
 
