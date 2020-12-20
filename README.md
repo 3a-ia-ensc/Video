@@ -6,6 +6,18 @@ _Auteurs:_ [Simon Audrix](mailto:saudrix@ensc.fr) & [Gabriel Nativel-Fontaine](m
 
 Ce dépôt contient notre travail dans le cadre du module **Projets applicatifs - Vidéo** du parcours **Intelligence Artificielle** inscrit dans la 3ème année du cursus d'ingénieur au sein de l'[Ecole Nationale Supérieure de Cognitique](http://www.ensc.fr).
 
+## Changelog
+
+### [semaine 8.12.2020 au 15.12.2020]
+
+* Modèle de classification d'images (Partie 1)
+
+### [semaine 15.12.2020 au 05.01.2020]
+
+- Ajout de l'enregistrement automatique du modèle durant l'entrainement
+- Ajout d'une visualisation des images les plus mal prédites (prédite dans la mauvaise classe avec une probabilité élevée)
+- Tracking vidéo
+
 ## Partie 1: Classification d'images
 
 Dans un premier temps, il nous a été demandé de classifier des images à l'aide d'un réseau de neurones.
@@ -65,6 +77,8 @@ Nous avons comparé les résultats obtenus avec un réseau créé à partir d'un
 
 #### Résultats
 
+##### Métriques
+
 <p align="center">
    <img src='img/results_vgg.jpeg' />
 </p>
@@ -73,3 +87,18 @@ Nous obtenons des résultats sensiblements identiques sur ce réseau mais pour u
 
 Nous obtenons **88%** d'accuracy sur le set de test. Nous obtenons également une précision de **90%**, ce qui indique un taux de faux positifs de 10% seulement. On obtient également un score de rappel de **87%**.
 
+##### Analyse des mauvaises prédictions
+
+Il peut être intéressant d'afficher les images du jeu de set qui ont été mal prédites avec un pourcentage élevé. Ici, on affiche 25 images dont le pourcentage de prédiction est supérieur à 90%.
+
+<p align="center">
+   <img src='img/bad_results.png' width='56%'/>
+</p>
+
+
+
+On observe les situations suivantes:
+
+- lorsque l'objet est perçu dans un angle moins souvent représenté dans la base de données, il est mal reconnu (c'est le cas pour la canette de coca vue de dessus et le bol vue de côté)
+- lorsque deux objets de classes différentes sont sur l'image, la reconnaissance peut préférer le "mauvaise objet" (c'est le cas pour le sucre et le lait des premières images)
+- lorsque un sachet ne présente plus les même proportions il est également mal reconnu (c'est le cas pour le sachet de riz partiellement vide)
