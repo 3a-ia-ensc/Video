@@ -102,3 +102,14 @@ On observe les situations suivantes:
 - lorsque l'objet est perçu dans un angle moins souvent représenté dans la base de données, il est mal reconnu (c'est le cas pour la canette de coca vue de dessus et le bol vue de côté)
 - lorsque deux objets de classes différentes sont sur l'image, la reconnaissance peut préférer le "mauvaise objet" (c'est le cas pour le sucre et le lait des premières images)
 - lorsque un sachet ne présente plus les même proportions il est également mal reconnu (c'est le cas pour le sachet de riz partiellement vide)
+
+
+
+## Partie 2: Apprentissage incrémental
+
+### Move-to-data
+
+
+
+### Fine tuning
+
