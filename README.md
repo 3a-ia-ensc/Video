@@ -105,17 +105,64 @@ On observe les situations suivantes:
 - lorsque deux objets de classes différentes sont sur l'image, la reconnaissance peut préférer le "mauvaise objet" (c'est le cas pour le sucre et le lait des premières images)
 - lorsque un sachet ne présente plus les même proportions il est également mal reconnu (c'est le cas pour le sachet de riz partiellement vide)
 
-
-
 ## Partie 2: Apprentissage incrémental
+
+Le code développé dans cette partie du projet est visible dans un jupyter notebook:  [notebooks/tracking_video.ipynb](https://github.com/3a-ia-ensc/Video/blob/main/notebooks/tracking_video.ipynb).
 
 ### Tracking vidéo
 
+En partant d'une première détection de l'objet d'intérêt qui prend la forme d'une boite englobante que l'on suppose correcte, on va suivre l'objet sur les frames suivantes.
 
+Pour chaque frame, on prend la boîte englobante de la frame précédente, on va créer un set de nouvelles boîtes potentielles. On va ensuite récupérer le "patch" de l'image associé à chaque nouvelle boîte englobante et effectuer une prediction à l'aide du modèle précédemment créé. On conservera comme nouvelle boîte celle qui fournira la prédiction la plus précise (pourcentage le plus élevé).
+
+Nous avons lancé le tracking vidéo sur toutes les vidéos de test, voici quelque examples de tracking.
+
+On obtient de bons résultats avec une Intersection sur l'Union (IoU) moyenne de **0.044**. De manière générale, notre réseau semble capable de reconnaitre l'objet à partir de morceaux de l'objet uniquement, on observe donc souvent un rétrecissement de nos boîtes englobantes comme on le voit sur le premier GIF.
+
+<p align="center" display="flex">
+   <img src='img/tracking_1.gif' width=32% />
+   <img src='img/tracking_2.gif' width=32% />
+  <img src='img/tracking_3.gif' width=32% />
+</p>
 
 ### Move-to-data
 
+Nous avons implémenté la méthode d'apprentissage incrémental "move-to-data" décrite dans _Move-to-Data: A new Continual Learning approach with Deep CNNs, Application for image-class recognition_.
 
+Pour chaque nouvelle image, on met à jour les poids de la dernière couche du réseau en appliquant la formule suivante 
+$$
+w_j′=w_j+(||w_j||∗\frac{v_i}{||v_i||} − w_j)*\epsilon
+$$
+Après entrainement sur les images issues de notre tracking vidéo, notre modèle présente de légère améliorations de performances sur le set de test.
+
+Initialement, on le modèle présentait les valeur suivantes:
+
+- loss = 0.085640
+
+- accuracy = 0.9703
+- Rappel = 0.9680
+- Precision = 0.9713
+
+Après 5 epochs de move-to-data sur les nouvelles images, le modèle présente les performances suivantes (en quelques secondes)
+
+- loss = 0.085636
+
+- accuracy = 0.9722
+- Rappel = 0.9714
+- Precision = 0.9757
+
+On note donc une légère amélioration des performances.
 
 ### Fine tuning
 
+Nous avons également implémenté la technique du fine-tuning pour comparer les résultats de la technique move-to-data. Dans un premier temps, on s'aperçoit que la méthode d'entrainement est bien plus longue.
+
+Après 5 épochs de fine-tuning, nous obtenons les performances suivantes:
+
+- loss = 0.5759
+
+- accuracy = 0.8267
+- Rappel = 0.8071
+- Precision = 0.8453
+
+Dans ce cas, on observe une nette diminution des performances. Ceci pourrait s'expliquer par une différence dans la "vitesse" des modifications faites aux poids (learning rate).
