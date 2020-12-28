@@ -8,15 +8,17 @@ Ce dépôt contient notre travail dans le cadre du module **Projets applicatifs 
 
 ## Changelog
 
-### [semaine 8.12.2020 au 15.12.2020]
+### [08.12.2020 au 15.12.2020]
 
 * Modèle de classification d'images (Partie 1)
 
-### [semaine 15.12.2020 au 05.01.2020]
+### [15.12.2020 au 05.01.2020]
 
 - Ajout de l'enregistrement automatique du modèle durant l'entrainement
 - Ajout d'une visualisation des images les plus mal prédites (prédite dans la mauvaise classe avec une probabilité élevée)
 - Tracking vidéo
+- Move-To-Data
+- Fine-tuning
 
 ## Partie 1: Classification d'images
 
@@ -106,6 +108,10 @@ On observe les situations suivantes:
 
 
 ## Partie 2: Apprentissage incrémental
+
+### Tracking vidéo
+
+
 
 ### Move-to-data
 
