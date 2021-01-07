@@ -79,7 +79,6 @@ def build_boxes(x, y, w, h, N, stride, H, W):
             for z in zoom:
                 new_w, new_h = int(w*z), int(h*z)
 
-
                 new_x = new_x + ((w - new_w) // 2)
                 new_y = new_y + ((h - new_h) // 2)
 
@@ -94,17 +93,18 @@ def build_boxes(x, y, w, h, N, stride, H, W):
     return pos
 
 
-def tracking(model, video_path, box_path):
-    """ Build a set of new potential bouding boxes from a given box
+def tracking(model, video_path, box_path, im_width, im_height, save_fig=False):
+    """ Track object in video
 
     Parameters:
-    filename (string): path of the file to track
+    model (tf.keras.Model): Model to use
+    video_path (string): path of the file to track
+    box_path (string): path of the bounding box file
 
     Return:
-    list: list of new boxes
+    predictions (dict): list of new boxes
     """
-    labels = { 0: 'bol', 1: 'coca', 2: 'lait', 3: 'riz', 4: 'sucre' }
-    # filename = '../VIDEOS/RicePlace3Subject3.mp4'
+    labels = {0: 'bol', 1: 'coca', 2: 'lait', 3: 'riz', 4: 'sucre'}
 
     m = re.search('VIDEOS/(.+)\.mp4', video_path)
     file = m.group(1)
@@ -119,10 +119,6 @@ def tracking(model, video_path, box_path):
     boxes = read_bounding_box(box_path)
     ious = {}
     predictions = {}
-
-    if(not cap.isOpened()):
-        print("ERROR: unable to read video:", video_filename)
-        sys.exit()
 
     print(f'Loading {nframes} frames')
 
@@ -154,18 +150,16 @@ def tracking(model, video_path, box_path):
                 #fig,ax = plt.subplots(1)
                 #plt.imshow(frame)
 
-                pred_boxes = np.zeros((0, 227, 227, 3))
-
-                t = 0
+                pred_boxes = np.zeros((0, im_width, im_height, 3))
 
                 for potential_box in new_boxes:
-                    t+= 1
                     x1, y1, w1, h1 = potential_box
 
                     new_patch = frame[y1:y1+h1, x1:x1+w1, :]
 
                     if 0 not in new_patch.shape:
-                        new_patch = tf.image.resize(new_patch, (227, 227), method='nearest')
+                        # nearest neighbors...
+                        new_patch = tf.image.resize(new_patch, (im_width, im_height), method='nearest')
                         pred_boxes = tf.concat((pred_boxes, tf.expand_dims(new_patch, 0)), axis=0)
 
                 if pred_boxes.shape[0] > 0:
@@ -174,9 +168,6 @@ def tracking(model, video_path, box_path):
 
                     # on récupère le patch associé à la meilleure prédiction
                     best_box = new_boxes[best_pred]
-                    x2, y2, w2, h2 = best_box
-                    #rect = patches.Rectangle((x2, y2), w2, h2, linewidth=1, edgecolor='y', facecolor='none')
-                    #ax.add_patch(rect)
 
                     # on modifie la current box pour la frame suivante
                     box = best_box
@@ -184,14 +175,11 @@ def tracking(model, video_path, box_path):
                     file_pred.write(f"{f} {1} {box[0]} {box[1]} {box[2]} {box[3]}\n")
 
                 if f in boxes:
-                    a, b, c, d = boxes[f]
-                    #rect = patches.Rectangle((a, b), c, d, linewidth=1, edgecolor='g', facecolor='none')
-                    #ax.add_patch(rect)
-
                     iou = bb_intersection_over_union(box, boxes[f])
                     ious[f] = iou
 
-                    # plt.savefig(f'img/frame__best{f}.png')
+                    if save_fig:
+                        plt.savefig(f'img/frame__best{f}.png')
 
             foundObj = True
 
