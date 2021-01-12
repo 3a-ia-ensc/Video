@@ -140,7 +140,7 @@ Nous avons lancé le tracking vidéo sur toutes les vidéos de test, voici quelq
 
 Visuellement, obtient de bons résultats, la boîte englobante prédite semble suivre l'objet que l'on "track". De manière générale, notre réseau semble capable de reconnaitre l'objet à partir de morceaux de l'objet uniquement, on observe donc souvent un rétrecissement de nos boîtes englobantes comme on le voit sur le premier GIF.
 
-Ce rétrécissement explique les valeurs d'intersection sur l'union (**IoU**) assez faible (en moyenne, 0.05) que l'on obtient avec notre tracker. En effet, la boîte créée ne représentant qu'une petite partie de la "vraie" boîte, l'IoU calculée est faible.
+Ce rétrécissement explique les valeurs d'intersection sur l'union (**IoU**) assez faible (en moyenne, 0.25) que l'on obtient avec notre tracker. En effet, la boîte créée ne représentant qu'une petite partie de la "vraie" boîte, l'IoU calculée est faible.
 
 <p align="center" display="flex">
    <img src='img/tracking_1.gif' width=32% />
@@ -185,7 +185,7 @@ Nous avons utilisé notre modèle modifié qui présentait les performances suiv
 - Rappel = 0.9835
 - Precision = 0.9851
 
-Après avoir appliqué la méthode move-to-data toutes les 10 images sur toutes les vidéos, on obtient sensiblement les mêmes performances à 6 chiffres après la virgule. On semble toutefois noter une nette amélioration de la valeur d'**IoU** sinon au cours du temps, au moins par rapport au modèle de base (non modifié par move-to-data).
+Après avoir appliqué la méthode move-to-data toutes les 10 images sur toutes les vidéos, on obtient sensiblement les mêmes performances à 6 chiffres après la virgule. On semble toutefois noter une valeur d'**IoU** similaire au modèle de base (non modifié par move-to-data).
 
 IoU moyen sur chaque video environ égal à 0.2.
 
