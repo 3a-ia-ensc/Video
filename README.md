@@ -12,13 +12,25 @@ Ce dépôt contient notre travail dans le cadre du module **Projets applicatifs 
 
 * Modèle de classification d'images (Partie 1)
 
-### [15.12.2020 au 05.01.2020]
+### [15.12.2020 au 05.01.2021]
 
 - Ajout de l'enregistrement automatique du modèle durant l'entrainement
+
 - Ajout d'une visualisation des images les plus mal prédites (prédite dans la mauvaise classe avec une probabilité élevée)
+
 - Tracking vidéo
+
 - Move-To-Data
+
 - Fine-tuning
+
+  ### [05.01.2021 au 22.01.2021]
+
+- Correction de l'algorithme d'Intersection Over Union
+- Mise à jour du modèle initial qui présente de meilleurs résultats, nous avons intégré les éléments de preprocessing des images directement dans le modèle Keras
+- Nettoyage du code
+- Ajout de comparaisons avec les modèles fournis
+- Ajout de comparaisons avec les tracker OpenCV
 
 ## Partie 1: Classification d'images
 
@@ -115,9 +127,17 @@ En partant d'une première détection de l'objet d'intérêt qui prend la forme 
 
 Pour chaque frame, on prend la boîte englobante de la frame précédente, on va créer un set de nouvelles boîtes potentielles. On va ensuite récupérer le "patch" de l'image associé à chaque nouvelle boîte englobante et effectuer une prediction à l'aide du modèle précédemment créé. On conservera comme nouvelle boîte celle qui fournira la prédiction la plus précise (pourcentage le plus élevé).
 
+#### Création des boîtes potentielles
+
+Pour créer des boîtes potentielles, en partant de la boîte d'origine (celle de la frame précédente), on créé de nouvelles bôites résultants de plusieurs translations de quelques pixels dans toutes les directions (ceci permet de suivre l'objet en mouvement). Afin de pouvoir suivre un objet qui s'approche ou s'éloigne, pour chacune des translations, nous créons également des boîtes zoomé selon différents facteurs.
+
+
+
 Nous avons lancé le tracking vidéo sur toutes les vidéos de test, voici quelque examples de tracking.
 
-On obtient de bons résultats avec une Intersection sur l'Union (IoU) moyenne de **0.044**. De manière générale, notre réseau semble capable de reconnaitre l'objet à partir de morceaux de l'objet uniquement, on observe donc souvent un rétrecissement de nos boîtes englobantes comme on le voit sur le premier GIF.
+Visuellement, obtient de bons résultats, la boîte englobante prédite semble suivre l'objet que l'on "track". De manière générale, notre réseau semble capable de reconnaitre l'objet à partir de morceaux de l'objet uniquement, on observe donc souvent un rétrecissement de nos boîtes englobantes comme on le voit sur le premier GIF.
+
+Ce rétrécissement explique les valeurs d'intersection sur l'union (**IoU**) assez faible (en moyenne, 0.05) que l'on obtient avec notre tracker. En effet, la boîte créée ne représentant qu'une petite partie de la "vraie" boîte, l'IoU calculée est faible.
 
 <p align="center" display="flex">
    <img src='img/tracking_1.gif' width=32% />
@@ -166,3 +186,15 @@ Après 5 épochs de fine-tuning, nous obtenons les performances suivantes:
 - Precision = 0.8453
 
 Dans ce cas, on observe une nette diminution des performances. Ceci pourrait s'expliquer par une différence dans la "vitesse" des modifications faites aux poids (learning rate).
+
+### Comparaisons
+
+Nous avons comparé notre méthode de tracking avec d'autres modèles ainsi qu'avec d'autre trackers. Cette comparaison s'est faite sur la base de la valeur d'**IoU** (Intersection Over Union) moyenne sur une vidéo.
+
+#### Models fournis
+
+Nous avons tester de remplacer notre modèle par deux modèles fournis.
+
+#### Tracker OpenCV
+
+Sans grande surprise, les trackers fournis par OpenCV donnent d'assez bonnes performances, le meilleur des trois que nous avons testé donne une IoU moyenne d'environ **0.45** sur la vidéo de test et le moins de **0.25**.
