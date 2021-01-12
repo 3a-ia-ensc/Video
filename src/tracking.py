@@ -235,7 +235,7 @@ def tracking(model, video_path, box_path, label, update=None, n_update=5, save_f
                     if len(update_batch) < n_update:
                         update_batch.append(patch)
                     else:
-                        fine_tuning(model, np.array(update_batch))
+                        fine_tuning(model, np.array(update_batch), epsilon, label)
                         update_batch = []
 
                 if f in boxes:
@@ -324,7 +324,7 @@ def move_to_data(model, images, epsilon, j):
 
     last_layer.set_weights([new_weights, b])
 
-def fine_tuning(model, images, label, epsilon):
+def fine_tuning(model, images, epsilon, label):
     """ Update method for continuous learning
 
     Args:
@@ -339,8 +339,10 @@ def fine_tuning(model, images, label, epsilon):
     for layer in model.layers[:-1]:
         layer.trainable = False
 
-    labels = np.array([label]*len(images))
-    model.fit(x=images, y=labels, epochs=1)
+    if len(images) > 0 and 0 not in images.shape:
+        labels = np.zeros([len(images), 5])
+        labels[:, label] = 1
+        model.fit(x=images, y=labels, epochs=1)
 
 
 def tracker_open_cvmodel(video_path, box_path, tracker):

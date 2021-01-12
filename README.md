@@ -27,7 +27,7 @@ Ce dépôt contient notre travail dans le cadre du module **Projets applicatifs 
   ### [05.01.2021 au 22.01.2021]
 
 - Correction de l'algorithme d'Intersection Over Union
-- Mise à jour du modèle initial qui présente de meilleurs résultats, nous avons intégré les éléments de preprocessing des images directement dans le modèle Keras
+- Mise à jour du modèle initial qui présente de meilleurs résultats, nous avons intégré les éléments de preprocessing des images directement dans le modèle Keras.
 - Nettoyage du code
 - Ajout de comparaisons avec les modèles fournis
 - Ajout de comparaisons avec les tracker OpenCV
@@ -75,8 +75,11 @@ Nous avons commencé par créer un réseau _"from scratch"_ , un simple réseau 
 <p align="center">
    <img src='img/results_custom_nn.png' />
 </p>
-
 Notre réseau présente d'assez bonnes performances, nous obtenons **91%** d'accuracy sur le set de test. Nous obtenons également une précision de **91%**, ce qui indique un taux de faux positifs de 9% seulement. On obtient également un score de rappel de **90%**. Le rappel donne le taux d'observations correctement étiquettées. On observe donc que seul 10% des prédictions sont mal étiquettées.
+
+Nous avons réussi a énormément améliorer les performances de notre modèle en intégrant les étapes de preprocessing d'image directement au sein du modèle, ainsi, les deux premières couches de notre modèle consistent en une étape de redimensionnement d'image (à la taille 227 par 227) ainsi qu'en une étape de _rescaling_, pour normaliser les images.
+
+Cette modification sur le réseau nous a permis d'atteindre une accuracy de **98%**, une précision de **99%** et un score de rappel de **98%**. 
 
 ### Réseaux pré-entraînés
 
@@ -173,6 +176,19 @@ Après 5 epochs de move-to-data sur les nouvelles images, le modèle présente l
 
 On note donc une légère amélioration des performances.
 
+Nous avons modifié notre algorithme pour effectuer un apprentissage continu **pendant** le tracking vidéo, ainsi, au cours du tracking sur un fichier, nous avons appliqué la modification des poids toutes les 10 images. 
+
+Nous avons utilisé notre modèle modifié qui présentait les performances suivantes: 
+
+- loss = 0.0565
+- accuracy = 0.9845
+- Rappel = 0.9835
+- Precision = 0.9851
+
+Après avoir appliqué la méthode move-to-data toutes les 10 images sur toutes les vidéos, on obtient sensiblement les mêmes performances à 6 chiffres après la virgule. On semble toutefois noter une nette amélioration de la valeur d'**IoU** sinon au cours du temps, au moins par rapport au modèle de base (non modifié par move-to-data).
+
+IoU moyen sur chaque video environ égal à 0.2.
+
 ### Fine tuning
 
 Nous avons également implémenté la technique du fine-tuning pour comparer les résultats de la technique move-to-data. Dans un premier temps, on s'aperçoit que la méthode d'entrainement est bien plus longue.
@@ -186,6 +202,8 @@ Après 5 épochs de fine-tuning, nous obtenons les performances suivantes:
 - Precision = 0.8453
 
 Dans ce cas, on observe une nette diminution des performances. Ceci pourrait s'expliquer par une différence dans la "vitesse" des modifications faites aux poids (learning rate).
+
+De même que pour le move-to-data, nous avons modifié notre algorithme pour l'appliquer sur nos vidéos de manière continue et pouvoir comparer les résultats. Ainsi, on semble noter de moins bonnes performances sur l'IoU moyen qui oscille aux alentours de 0.15.
 
 ### Comparaisons
 
