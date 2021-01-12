@@ -5,8 +5,6 @@ DB
 VIDEOS
 logs
 notebooks/img
-img_tracking
-img_tracking/
 
 MANIFEST
 build
