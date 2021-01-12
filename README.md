@@ -24,7 +24,7 @@ Ce dépôt contient notre travail dans le cadre du module **Projets applicatifs 
 
 - Fine-tuning
 
-  ### [05.01.2021 au 22.01.2021]
+### [05.01.2021 au 22.01.2021]
 
 - Correction de l'algorithme d'Intersection Over Union
 - Mise à jour du modèle initial qui présente de meilleurs résultats, nous avons intégré les éléments de preprocessing des images directement dans le modèle Keras
@@ -198,3 +198,34 @@ Nous avons tester de remplacer notre modèle par deux modèles fournis.
 #### Tracker OpenCV
 
 Sans grande surprise, les trackers fournis par OpenCV donnent d'assez bonnes performances, le meilleur des trois que nous avons testé donne une IoU moyenne d'environ **0.45** sur la vidéo de test et le moins de **0.25**.
+
+## Conclusion
+
+Nous avons terminés la majorité des tâches demandées. Dans cette partie, nous proposons des pistes d'amélioration que nous pourions mettre en place dans le futur afin d'améliorer les performances de notre tracking.
+
+### Taille des boites
+
+L'un des principaux problèmes de notre algorithme est le cadrage des boites. En effet, la taile d'une boite de tracking n'est pas limité, les cadre crées par notre codes on donc tendances à se réduire des fois à un point unique. L'objectif de suivre l'objet est donc accompli, cependant celui d'obtenir une boite englobante est quelque peu atteint par ce mécanisme.
+
+Des solutions qui pourrait permettre une amélioration de ce fonctionnement serait les suivante:
+
+- Limiter la taille des boites: Cela ce discute, mais une taille minimale (et maximale) pourrait être imposé au boite afin de prévenir leur rétrecissement.
+- Render le changement de taille dépendant de la boite englobante précédante: On pourrait choisi de modifier moins fortement une petit boite qu'une grande ce qui pourrait avoir comme impact de limiter le retrécissement des boite crées par notre algorithme.
+
+### Perte du suivi
+
+Dans le cas ou un objet suivi serait perdu par un mouvement trop important dans la vidéo, ou en sortant de l'écran il est actuellement impossible avec l'algorithme actuel de reprendre le suivi lorsque ce dernier réapparétrait sur l'image. En effet notre technique est itérative, et chaque boite s'appuie sur l précédente. Si l'on perd l'objet l'algorithme va continuer à créer des boites non pertinente qui ont peut de chance de recapturer l'objet au moment de sa réapparition dans la vidéo.
+
+Une technique à mettre en place pourrait être la suivante:
+
+ - Detecter la perte d'un objet:
+
+En établissant un seuil minimal, il serait possible d'évaluer si l'objet est présent ou non dans une boite prédite par le réseaux on pourrait supposer que si le réseaux présente une reconnaissance faible (.1 de sureté par exemple) alors on peut supposer que l'on à perdu le suivi ou que l'objet n'est plus présent sur la vidéo.
+
+ - Passer en mode recherche:
+ 
+ On activerait alors un mode de recherche, au lieu de créer des boites dépendantes des précédantes, on pourrait créer un répartition sur l'image entière en la découpant en rectangle recouvrant toutes l'image. Ces rectangles serait alors passés à notre réseaux.
+ 
+ - Reprendre le tracking:
+ 
+ On pourrait alors repasser dans le mode tracking, en mettant un seuil de reconnaissance, à partir du quel on suppose que notre objet est réapparut dans l'un des rectangle de l'image découpe. Ce rectangle constiturai alors notre nouvelle box de départ et l'algorithme pourrait reprendre le tracking de manière itérative.
